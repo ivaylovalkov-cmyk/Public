@@ -2,9 +2,12 @@
 title Reset Windows Hello for Business
 rem ESC character for ANSI bold/underline formatting
 for /f %%a in ('echo prompt $E ^| cmd') do set "ESC=%%a"
+rem Display name of the signed-in user, falls back to username
+for /f "tokens=2,*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI" /v LastLoggedOnDisplayName 2^>nul ^| find "LastLoggedOnDisplayName"') do set "DISPLAYNAME=%%b"
+if not defined DISPLAYNAME set "DISPLAYNAME=%USERNAME%"
 echo.
 echo This will refresh YOUR Windows Hello for Business (PIN, fingerprint and face sign-in)
-echo for user: %USERDOMAIN%\%USERNAME% (no data will be lost)
+echo for user: %DISPLAYNAME% (no data will be lost)
 echo.
 echo After it finishes you will be signed out and device will be rebooted automatically. Sign back in with your
 echo PASSWORD %ESC%[1m%ESC%[4mWHILE ON THE CORPORATE NETWORK%ESC%[0m, then set up a new PIN.
